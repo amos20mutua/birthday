@@ -542,16 +542,24 @@
           padding-bottom: 24px;
         }
 
-        .story-card {
-          padding: 18px 16px 20px !important;
-        }
+              /* Ensure the story area aligns to the top and can grow on small screens so no content is clipped */
+              .story-wrap {
+                align-items: flex-start;
+                min-height: auto;
+                padding-top: 12px;
+                padding-bottom: 12px;
+              }
 
-        .countdown-stage {
-          margin-top: 12px;
-          min-height: 96px;
-          border-radius: 14px;
-        }
-      }
+              .story-card {
+                padding: 18px 16px 20px !important;
+              }
+
+              .countdown-stage {
+                margin-top: 12px;
+                min-height: 96px;
+                border-radius: 14px;
+              }
+            }
 
       @media (prefers-reduced-motion: reduce) {
         .sparkle,
