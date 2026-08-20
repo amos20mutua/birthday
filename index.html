@@ -691,12 +691,12 @@
           </div>
 
           <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <button id="wish-btn" class="button-soft rounded-full px-5 py-2.5 text-sm font-medium">Tap for a quick boost &#10024;</button>
+            <button id="wish-btn" class="button-soft rounded-full px-5 py-2.5 text-sm font-medium">A brief wish &#10024;</button>
             <button id="replay-btn" class="button-soft rounded-full px-5 py-2.5 text-sm font-medium">Replay</button>
           </div>
 
           <p class="mt-9 text-xs text-violet-200/60">No expectations. Just a moment made on purpose.</p>
-          <p class="mt-1 text-[9px] tracking-[0.2em] text-violet-200/30 select-none">💻·Amos · 20 Aug 2026</p>
+          <p class="mt-1 text-[9px] tracking-[0.2em] text-violet-200/30 select-none">— Amos · 20 Aug 2026</p>
         </section>
       </div>
     </main>
@@ -704,7 +704,7 @@
     <div id="wish-modal-backdrop" class="wish-modal-backdrop" aria-hidden="true">
       <div class="wish-modal">
         <div class="mb-3 flex items-start justify-between gap-3">
-          <p class="text-sm font-semibold tracking-wide text-violet-50">A tiny wish</p>
+          <p class="text-sm font-semibold tracking-wide text-violet-50">A few quiet wishes</p>
           <button id="wish-close-btn" type="button" class="button-soft h-7 w-7 rounded-full text-sm leading-none" aria-label="Close wish modal">&times;</button>
         </div>
         <div class="space-y-2 text-sm leading-relaxed text-violet-100/85">
@@ -874,7 +874,12 @@
         }
 
         function seedStars() {
-          const desired = Math.max(60, Math.floor((window.innerWidth * window.innerHeight) / 13000));
+          const areaFactor = Math.floor((window.innerWidth * window.innerHeight) / 13000);
+          // Reduce star density on very small screens or when reduced-motion is active
+          const reduced = document.documentElement.classList.contains('reduced-motion');
+          const base = Math.max(40, areaFactor);
+          const cap = reduced ? 80 : 120;
+          const desired = Math.min(cap, base);
           stars.length = 0;
           for (let i = 0; i < desired; i += 1) {
             stars.push({
@@ -890,9 +895,12 @@
         }
 
         function emitSparkles(clientX, clientY, amount = 16) {
+          // Respect reduced-motion and very small screens to avoid jank
+          if (document.documentElement.classList.contains('reduced-motion')) return;
+          const maxAllowed = window.innerWidth < 420 ? 8 : amount;
           const x = clientX ?? window.innerWidth * 0.5;
           const y = clientY ?? window.innerHeight * 0.5;
-          for (let i = 0; i < amount; i += 1) {
+          for (let i = 0; i < maxAllowed; i += 1) {
             const s = document.createElement('span');
             s.className = 'sparkle';
             const a = rand(0, Math.PI * 2);
