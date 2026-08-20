@@ -37,6 +37,7 @@
       body {
         overflow: auto;
         -webkit-overflow-scrolling: touch;
+        overflow-x: hidden;
         color: var(--ink);
         background:
           radial-gradient(980px 520px at 52% -12%, rgba(255, 206, 135, 0.24), transparent 58%),
@@ -559,6 +560,19 @@
                 min-height: 96px;
                 border-radius: 14px;
               }
+            }
+
+            @media (max-width: 420px) {
+              /* Tighten layout for the smallest screens: make the card take full width, remove side mascots to avoid overflow */
+              html, body { overflow-x: hidden; }
+              .mascot { display: none !important; }
+              #hero, #main-page { padding-left: 10px; padding-right: 10px; }
+              .mx-auto { max-width: 100% !important; }
+              .story-wrap { padding-left: 6px; padding-right: 6px; }
+              .story-card { width: 100% !important; margin: 0 !important; border-radius: 18px; padding: 14px !important; }
+              .hero-card, .story-card { border-radius: 18px; }
+              .slider-shell { height: 48px; }
+              .signature-line { font-size: 11px; }
             }
 
       @media (prefers-reduced-motion: reduce) {
