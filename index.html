@@ -715,6 +715,19 @@
           touchPrevY: null,
         };
 
+        // Avoid parallax/motion updates while the user is actively scrolling to prevent elements
+        // from shifting unexpectedly during vertical scroll on small screens.
+        let isScrolling = false;
+        let _scrollTimer = null;
+        window.addEventListener('scroll', () => {
+          isScrolling = true;
+          if (_scrollTimer) clearTimeout(_scrollTimer);
+          _scrollTimer = setTimeout(() => {
+            isScrolling = false;
+            _scrollTimer = null;
+          }, 120);
+        }, { passive: true });
+
         const stars = [];
         const sequenceTimers = new Set();
         const mascotMeta = mascots.map((el, i) => ({
@@ -997,8 +1010,18 @@
 
         function animate(now) {
           const t = now * 0.001;
-          const nx = (motion.pointerX / window.innerWidth - 0.5) * 2;
-          const ny = (motion.pointerY / window.innerHeight - 0.5) * 2;
+          // If the user is actively scrolling, suppress pointer-based parallax so elements
+          // remain visually stable during vertical scroll.
+          let nx = (motion.pointerX / window.innerWidth - 0.5) * 2;
+          let ny = (motion.pointerY / window.innerHeight - 0.5) * 2;
+          if (isScrolling) {
+            // reduce influence during scroll
+            nx = 0;
+            ny = 0;
+            // dampen ongoing field velocities to avoid sudden jumps when scrolling stops
+            motion.fieldVX *= 0.85;
+            motion.fieldVY *= 0.85;
+          }
 
           motion.fieldVX += nx * 0.022;
           motion.fieldVY += ny * 0.022;
